@@ -11,10 +11,9 @@ TcpClient::TcpClient(QWidget *parent)
 {
     ui->setupUi(this);
     loadConfig();
-    // 信号发送方，发送信号，信号接收方，每次用哪个函数处理
+    // 发送信号，参数分别是：信号发送方，发送信号，信号接收方，每次用哪个函数处理
     connect(&m_tcpSocket, SIGNAL(connected()),
-            this, SLOT(showConnect()));
-
+                this, SLOT(showConnect()));
     // 连接服务器，默认是读写模式
     m_tcpSocket.connectToHost(QHostAddress(m_strIP), m_usPort);
 }
@@ -41,6 +40,7 @@ void TcpClient::loadConfig()
         m_usPort = strList.at(1).toUShort();
         qDebug() << "ip:"<< m_strIP << "port:" << m_usPort;
     }else{
+        // 第二个参数是title，第三个参数是text
         QMessageBox::critical(this,"open config","open config failed");
     }
 }
