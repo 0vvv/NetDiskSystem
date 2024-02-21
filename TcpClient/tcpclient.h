@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFile>
 #include <QTcpSocket> // pro文件的QT+=network后才可以使用
+#include <protocol.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,6 +25,9 @@ public:
     // 信号和槽函数的结合使得对象能够进行解耦的通信
 public slots:
     void showConnect();
+
+private slots:
+    void on_send_pb_clicked();
 
 private:
     Ui::TcpClient *ui;

@@ -1,0 +1,4 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+build-TcpClient-Desktop_Qt_6_6_1_MinGW_64_bit-Debug/
