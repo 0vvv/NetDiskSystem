@@ -1,9 +1,29 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+
 typedef unsigned int uint;
+#define REGIST_OK "register ok"
+#define REGIST_FAILED "register failed: name existed"
+
+enum ENUM_MSG_TYPE
+{
+    ENUM_MSG_TYPE_MIN=0,
+    ENUM_MSG_TYPE_REGIST_REQUEST,  // 注册请求
+    ENUM_MSG_TYPE_REGIST_RESPOND,  // 注册回复
+    // ENUM_MSG_TYPE_REQUEST,
+    // ENUM_MSG_TYPE_RESPOND,
+    // ENUM_MSG_TYPE_REQUEST,
+    // ENUM_MSG_TYPE_RESPOND,
+    // ENUM_MSG_TYPE_REQUEST,
+    // ENUM_MSG_TYPE_RESPOND,
+    // ENUM_MSG_TYPE_REQUEST,
+    // ENUM_MSG_TYPE_RESPOND,
+    ENUM_MSG_TYPE_MAX=0x00ffffff,
+};
 
 struct PDU
 {

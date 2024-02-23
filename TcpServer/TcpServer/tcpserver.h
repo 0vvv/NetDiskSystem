@@ -2,6 +2,7 @@
 #define TCPSERVER_H
 
 #include <QWidget>
+#include <mytcpserver.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

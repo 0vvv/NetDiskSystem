@@ -5,15 +5,18 @@
 #include <QMessageBox>
 #include <QHostAddress>
 
-TcpClient::TcpClient(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::TcpClient)
+// TcpClient继承QWidget，不是QMainWindow，不然不能给最外层加layout
+TcpClient::TcpClient(QWidget *parent): QWidget(parent),
+    ui(new Ui::TcpClient)
 {
     ui->setupUi(this);
+    resize(500,200);
     loadConfig();
     // 发送信号，参数分别是：信号发送方，发送信号，信号接收方，每次用哪个函数处理
     connect(&m_tcpSocket, SIGNAL(connected()),
                 this, SLOT(showConnect()));
+    connect(&m_tcpSocket, SIGNAL(readyRead()),
+                this, SLOT(recvMsg()));
     // 连接服务器，默认是读写模式
     m_tcpSocket.connectToHost(QHostAddress(m_strIP), m_usPort);
 }
@@ -50,6 +53,36 @@ void TcpClient::showConnect()
     QMessageBox::information(this, "连接服务器","连接服务器成功");
 }
 
+void TcpClient::recvMsg()
+{
+    // 和server端一样的处理过程，不过是由socket来接受和处理消息
+    // 1. 收数据
+    // bytesAvailable当前可读的数据大小
+    qDebug()<< m_tcpSocket.bytesAvailable();
+    uint uiPDULen = 0;
+    m_tcpSocket.read((char*)&uiPDULen, sizeof(uint));
+    uint uiMsgLen = uiPDULen - sizeof(PDU);
+    PDU * pdu = mkPDU(uiMsgLen);
+    m_tcpSocket.read((char*)pdu + sizeof(uint), uiPDULen - sizeof(uint));
+
+    // 2. 判断数据类型并处理
+    switch(pdu->uiMsgType){
+    case ENUM_MSG_TYPE_REGIST_RESPOND:
+    {
+        if(strcmp(pdu->caData, REGIST_OK) == 0){
+            QMessageBox::information(this,"注册",REGIST_OK);
+        }else if(strcmp(pdu->caData, REGIST_FAILED)==0){
+            QMessageBox::warning(this,"注册",REGIST_FAILED);
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    free(pdu);
+    pdu = NULL;
+}
+#if 0
 void TcpClient::on_send_pb_clicked()
 {
     QString strMsg = ui->lineEdit->text();
@@ -63,5 +96,35 @@ void TcpClient::on_send_pb_clicked()
     }else{
         QMessageBox::warning(this,"信息发送","发送的信息不能为空");
     }
+}
+#endif
+
+void TcpClient::on_login_pb_clicked()
+{
+
+}
+
+
+void TcpClient::on_regist_pb_clicked()
+{
+    QString strName = ui->name_le->text();
+    QString strPwd = ui->pwd_le->text();
+    if(!strName.isEmpty() && !strPwd.isEmpty()){
+        PDU *pdu=mkPDU(0);
+        pdu->uiMsgType=ENUM_MSG_TYPE_REGIST_REQUEST;
+        strncpy(pdu->caData, strName.toStdString().c_str(), 32);
+        strncpy(pdu->caData+32, strPwd.toStdString().c_str(), 32);
+        m_tcpSocket.write((char*)pdu, pdu->uiPDULen);
+        free(pdu);
+        pdu = NULL;
+    }else{
+        QMessageBox::critical(this,"注册","注册失败，用户名或密码为空");
+    }
+}
+
+
+void TcpClient::on_cancel_pb_clicked()
+{
+
 }
 

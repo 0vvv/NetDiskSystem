@@ -3,6 +3,7 @@
 // 同时处理多个socket的消息
 #include <QTcpSocket>
 #include <protocol.h>
+#include <opedb.h>
 
 class MyTcpSocket : public QTcpSocket
 {

@@ -12,7 +12,7 @@ class TcpClient;
 }
 QT_END_NAMESPACE
 
-class TcpClient : public QMainWindow
+class TcpClient : public QWidget
 {
     Q_OBJECT
 
@@ -25,9 +25,16 @@ public:
     // 信号和槽函数的结合使得对象能够进行解耦的通信
 public slots:
     void showConnect();
+    void recvMsg();
 
 private slots:
-    void on_send_pb_clicked();
+    // void on_send_pb_clicked();
+
+    void on_login_pb_clicked();
+
+    void on_regist_pb_clicked();
+
+    void on_cancel_pb_clicked();
 
 private:
     Ui::TcpClient *ui;
