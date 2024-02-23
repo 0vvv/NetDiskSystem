@@ -6,6 +6,13 @@ MyTcpSocket::MyTcpSocket()
 {
     connect(this, SIGNAL(readyRead()),
             this, SLOT(recvMsg()));
+    connect(this, SIGNAL(disconnected()),
+            this, SLOT(clientOffline()));
+}
+
+QString MyTcpSocket::getName()
+{
+    return m_strName;
 }
 
 void MyTcpSocket::recvMsg()
@@ -42,9 +49,39 @@ void MyTcpSocket::recvMsg()
         resPdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_LOGIN_REQUEST:
+    {
+        char caName[32] = {'\0'};
+        char caPwd[32] = {'\0'};
+        strncpy(caName, pdu->caData, 32);
+        strncpy(caPwd, pdu->caData+32, 32);
+        bool  ret = OpeDB::getInstance().handleLogin(caName, caPwd);
+        PDU * resPdu = mkPDU(0);
+        resPdu->uiMsgType = ENUM_MSG_TYPE_LOGIN_RESPOND;
+        if(ret){
+            strcpy(resPdu->caData, LOGIN_OK);
+            // 记录socket的名字
+            m_strName = caName;
+        }else{
+            strcpy(resPdu->caData, LOGIN_FAILED);
+        }
+        write((char*)resPdu, resPdu->uiPDULen);
+        free(resPdu);
+        resPdu = NULL;
+        break;
+    }
     default:
             break;
     }
     free(pdu);
     pdu = NULL;
+}
+
+void MyTcpSocket::clientOffline()
+{
+    // 修改数据库中的online字段
+    OpeDB::getInstance().handleOffline(m_strName.toStdString().c_str());
+    // 删除对应的socket
+    emit offline(this);
+
 }

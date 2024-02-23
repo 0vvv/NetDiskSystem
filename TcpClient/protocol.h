@@ -8,13 +8,16 @@ typedef unsigned int uint;
 #define REGIST_OK "register ok"
 #define REGIST_FAILED "register failed: name existed"
 
+#define LOGIN_OK "login ok"
+#define LOGIN_FAILED "login failed: name error or pwd error or relogin"
+
 enum ENUM_MSG_TYPE
 {
     ENUM_MSG_TYPE_MIN=0,
-    ENUM_MSG_TYPE_REGIST_REQUEST,  // 注册请求
-    ENUM_MSG_TYPE_REGIST_RESPOND,  // 注册回复
-    // ENUM_MSG_TYPE_REQUEST,
-    // ENUM_MSG_TYPE_RESPOND,
+    ENUM_MSG_TYPE_REGIST_REQUEST,   // 注册请求
+    ENUM_MSG_TYPE_REGIST_RESPOND,   // 注册回复
+    ENUM_MSG_TYPE_LOGIN_REQUEST,    // 登录请求
+    ENUM_MSG_TYPE_LOGIN_RESPOND,    // 登录回复
     // ENUM_MSG_TYPE_REQUEST,
     // ENUM_MSG_TYPE_RESPOND,
     // ENUM_MSG_TYPE_REQUEST,

@@ -16,6 +16,10 @@ public:
     static MyTcpServer &getInstance();
     // incomingConnection是重写了QTcpServer里的一个函数
     void incomingConnection(qintptr socketDescription);
+
+public slots:
+    void deleteSocket(MyTcpSocket *mySocket);
+
 private:
     QList<MyTcpSocket*> m_tcpSocketList;
 };
