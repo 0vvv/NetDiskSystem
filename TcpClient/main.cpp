@@ -1,17 +1,12 @@
 #include "tcpclient.h"
 
 #include <QApplication>
-#include "opewidget.h"
-// #include "friend.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    // TcpClient w;
-    // w.show();
-    OpeWidget w;
-    w.show();
-    // Friend w;
-    // w.show();
+    // 单例模式：只有一个tcpclient的instance
+    TcpClient::getInstance().show();
+
     return a.exec();
 }

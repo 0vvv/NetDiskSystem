@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QTcpSocket> // pro文件的QT+=network后才可以使用
 #include <protocol.h>
+#include <opewidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,6 +22,9 @@ public:
     ~TcpClient();
     // 加载配置资源
     void loadConfig();
+
+    static TcpClient &getInstance();
+    QTcpSocket &getTcpSocket();
     // 槽函数：与信号（signal）关联的普通C++成员函数。
     // 信号和槽函数的结合使得对象能够进行解耦的通信
 public slots:

@@ -29,6 +29,7 @@ void MyTcpSocket::recvMsg()
 
     // 2. 判断数据类型并处理
     switch(pdu->uiMsgType){
+        // 注册请求
     case ENUM_MSG_TYPE_REGIST_REQUEST:
     {
         char caName[32] = {'\0'};
@@ -49,6 +50,7 @@ void MyTcpSocket::recvMsg()
         resPdu = NULL;
         break;
     }
+        // 登录请求
     case ENUM_MSG_TYPE_LOGIN_REQUEST:
     {
         char caName[32] = {'\0'};
@@ -70,8 +72,27 @@ void MyTcpSocket::recvMsg()
         resPdu = NULL;
         break;
     }
+        // 显示所有在线用户
+    case ENUM_MSG_TYPE_ALL_ONLINE_REQUEST:
+    {
+        QStringList res=OpeDB::getInstance().handleAllOnline();
+        // 消息长度
+        uint uiMsgLen = res.size()*32;
+        PDU *respdu = mkPDU(uiMsgLen);
+        respdu->uiMsgType=ENUM_MSG_TYPE_ALL_ONLINE_RESPOND;
+        for(int i=0;i<res.size();i++){
+            // 先转成(char*)
+            memcpy((char*)(respdu->caMsg)+32*i,
+                   res.at(i).toStdString().c_str(),
+                   res.at(i).size());
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
     default:
-            break;
+        break;
     }
     free(pdu);
     pdu = NULL;
