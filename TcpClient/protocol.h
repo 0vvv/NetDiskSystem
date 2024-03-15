@@ -10,6 +10,9 @@ typedef unsigned int uint;
 
 #define LOGIN_OK "login ok"
 #define LOGIN_FAILED "login failed: name error or pwd error or relogin"
+#define SEARCH_USER_NO "no such people"
+#define SEARCH_USER_ONLINE "online"
+#define SEARCH_USER_OFFLINE "offline"
 
 enum ENUM_MSG_TYPE
 {

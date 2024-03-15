@@ -91,6 +91,25 @@ void MyTcpSocket::recvMsg()
         respdu = NULL;
         break;
     }
+
+        // 搜索用户
+    case ENUM_MSG_TYPE_SEARCH_USR_REQUEST:
+    {
+        int res = OpeDB::getInstance().handleSearchUser(pdu->caData);
+        PDU* respdu=mkPDU(0);
+        respdu->uiMsgType=ENUM_MSG_TYPE_SEARCH_USR_RESPOND;
+        if(res==1){
+            strcpy(respdu->caData,SEARCH_USER_ONLINE);
+        }else if(res==0){
+            strcpy(respdu->caData,SEARCH_USER_OFFLINE);
+        }else{
+            strcpy(respdu->caData,SEARCH_USER_NO);
+        }
+        write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
     default:
         break;
     }

@@ -105,6 +105,20 @@ void TcpClient::recvMsg()
         OpeWidget::getInstance().getFriend()->showAllOnlineUser(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_SEARCH_USR_RESPOND:
+    {
+        QString tips;
+        QString name = OpeWidget::getInstance().getFriend()->m_strSearchName;
+        if(strcmp(pdu->caData,SEARCH_USER_NO)==0){
+            tips = QString("%1 : not exist").arg(name);
+        }else if(strcmp(pdu->caData,SEARCH_USER_ONLINE)==0){
+            tips = QString("%1 : online").arg(name);
+        }else{
+            tips = QString("%1 : offline").arg(name);
+        }
+        QMessageBox::information(this, "搜索",tips);
+        break;
+    }
     default:
         break;
     }
