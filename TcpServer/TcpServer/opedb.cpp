@@ -62,7 +62,7 @@ bool OpeDB::handleLogin(const char *name, const char *pwd)
     if(query.next()){
         // 把online更新为1，表示已登录
         data = QString("update userInfo set online=1 where name=\'%1\' and pwd=\'%2\'").arg(name).arg(pwd);
-        qDebug() << data;
+        // qDebug() << data;
         QSqlQuery query;
         query.exec(data);
         return true;
@@ -108,14 +108,47 @@ int OpeDB::handleSearchUser(const char *name)
     if(query.next()){
        int res = query.value(0).toInt();
        if(res==1){
-           // 在线
+           // 在线返回1
             return 1;
        }else{
-           // 不在线
+           // 不在线返回0
             return 0;
        }
     }else{
-        // 不存在
+        // 不存在返回-1
         return -1;
+    }
+}
+
+int OpeDB::handleAddFriend(const char *pername, const char *name)
+{
+    if(NULL==pername || NULL==name){
+        return -1;
+    }
+    // pername和name是否已经是好友
+    QString data = QString("select * from friendInfo where(id=(select id from userInfo where name=\'%1\') and friendId=(select id from userInfo where name=\'%2\')) "
+                           "or (id=(select id from userInfo where name=\'%3\') and friendId=(select id from userInfo where name=\'%4\'))")
+                       .arg(name).arg(pername).arg(pername).arg(name);
+    QSqlQuery query;
+    query.exec(data);
+    if(query.next()){
+        // 已经是好友返回0
+        return 0;
+    }else{
+        data = QString("select online from userInfo where name=\'%1\'").arg(pername);
+        query.exec(data);
+        if(query.next()){
+            int res = query.value(0).toInt();
+            if(res==1){
+                // 用户在线返回1
+                return 1;
+            }else{
+                // 用户不在线返回2
+                return 2;
+            }
+        }else{
+            // 不存在这个用户返回-1
+            return 3;
+        }
     }
 }

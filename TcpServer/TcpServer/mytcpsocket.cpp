@@ -1,5 +1,6 @@
 #include "mytcpsocket.h"
 #include <QDebug>
+#include "tcpserver.h"
 
 // 哪个收到信号就哪个socket处理该信号
 MyTcpSocket::MyTcpSocket()
@@ -91,7 +92,6 @@ void MyTcpSocket::recvMsg()
         respdu = NULL;
         break;
     }
-
         // 搜索用户
     case ENUM_MSG_TYPE_SEARCH_USR_REQUEST:
     {
@@ -106,6 +106,39 @@ void MyTcpSocket::recvMsg()
             strcpy(respdu->caData,SEARCH_USER_NO);
         }
         write((char*)respdu, respdu->uiPDULen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+        // 加好友请求
+    case ENUM_MSG_TYPE_ADD_FRIEND_REQUEST:
+    {
+        char pername[32] = {'\0'};
+        char name[32] = {'\0'};
+        strncpy(pername, pdu->caData, 32);
+        strncpy(name, pdu->caData+32, 32);
+        int res = OpeDB::getInstance().handleAddFriend(pername,name);
+        PDU* respdu=mkPDU(0);
+        if(res==-1){
+            respdu->uiMsgType=ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData,UNKNOWN_ERROR);
+            write((char*)respdu, respdu->uiPDULen);
+        }else if(res==0){
+            respdu->uiMsgType=ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData,EXISTED_FRIEND);
+            write((char*)respdu, respdu->uiPDULen);
+        }else if(res==1){
+            // 转发添加好友请求给对方
+            MyTcpServer::getInstance().resend(pername, pdu);
+        }else if(res==2){
+            respdu->uiMsgType=ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData,ADD_FRIEND_OFFLINE);
+            write((char*)respdu, respdu->uiPDULen);
+        }else{
+            respdu->uiMsgType=ENUM_MSG_TYPE_ADD_FRIEND_RESPOND;
+            strcpy(respdu->caData,ADD_FRIEND_NOEXIST);
+            write((char*)respdu, respdu->uiPDULen);
+        }
         free(respdu);
         respdu = NULL;
         break;

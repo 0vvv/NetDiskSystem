@@ -30,17 +30,7 @@
        </item>
        <item>
         <property name="text">
-         <string>22222</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>33333</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>44444</string>
+         <string>5555</string>
         </property>
        </item>
       </widget>

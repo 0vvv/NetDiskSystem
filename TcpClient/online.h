@@ -17,6 +17,9 @@ public:
     ~Online();
 
     void showUser(PDU * pdu);
+private slots:
+    void on_addFriend_pb_clicked();
+
 private:
     Ui::Online *ui;
 };

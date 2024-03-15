@@ -19,6 +19,7 @@ public:
     void handleOffline(const char *name);
     QStringList handleAllOnline();
     int handleSearchUser(const char* name);
+    int handleAddFriend(const char* pername, const char* name);
 signals:
 
 public slots:

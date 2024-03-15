@@ -25,6 +25,8 @@ public:
 
     static TcpClient &getInstance();
     QTcpSocket &getTcpSocket();
+
+    QString loginName();
     // 槽函数：与信号（signal）关联的普通C++成员函数。
     // 信号和槽函数的结合使得对象能够进行解耦的通信
 public slots:
@@ -47,5 +49,7 @@ private:
     quint16 m_usPort;
     // QTcpsocket用于连接服务器，与服务器数据交互
     QTcpSocket m_tcpSocket;
+    // 登录用户名
+    QString m_strLoginName;
 };
 #endif // TCPCLIENT_H
