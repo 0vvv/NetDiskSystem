@@ -124,6 +124,11 @@ void TcpClient::recvMsg()
         QMessageBox::information(this, "搜索",tips);
         break;
     }
+    case ENUM_MSG_TYPE_ADD_FRIEND_RESPOND:
+    {
+        QMessageBox::information(this, "添加好友", pdu->caData);
+        break;
+    }
     case ENUM_MSG_TYPE_ADD_FRIEND_REQUEST:
     {
         char caName[32]={'\0'};
@@ -144,9 +149,9 @@ void TcpClient::recvMsg()
         respdu = NULL;
         break;
     }
-    case ENUM_MSG_TYPE_ADD_FRIEND_RESPOND:
+    case ENUM_MSG_TYPE_FLUSH_FRIEND_RESPOND:
     {
-        QMessageBox::information(this, "添加好友", pdu->caData);
+        OpeWidget::getInstance().getFriend()->updateFriendList(pdu);
         break;
     }
     default:

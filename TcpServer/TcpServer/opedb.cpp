@@ -152,3 +152,24 @@ int OpeDB::handleAddFriend(const char *pername, const char *name)
         }
     }
 }
+
+QStringList OpeDB::handleFlushFriend(const char *name)
+{
+    QStringList strFriendList;
+    strFriendList.clear();
+    if(name == NULL){
+        return strFriendList;
+    }
+    QString data = QString("select id from userInfo where online=1 and id =(select id from friendInfo where friendId=(select id from userInfo where name=\'%1\'))").arg(name);
+    QSqlQuery query;
+    query.exec(data);
+    while(query.next()){
+        strFriendList.append(query.value(0).toString());
+    }
+    data = QString("select id from userInfo where online=1 and id =(select friendId from friendInfo where id=(select id from userInfo where name=\'%1\'))").arg(name);
+    query.exec(data);
+    while(query.next()){
+        strFriendList.append(query.value(0).toString());
+    }
+    return strFriendList;
+}

@@ -143,6 +143,23 @@ void MyTcpSocket::recvMsg()
         respdu = NULL;
         break;
     }
+        // 刷新好友请求
+    case ENUM_MSG_TYPE_FLUSH_FRIEND_REQUEST:
+    {
+        char name[32] = {'\0'};
+        strncpy(name, pdu->caData, 32);
+        QStringList res = OpeDB::getInstance().handleFlushFriend(name);
+        uint uiMsgLen = res.size()*32;
+        PDU *pdu = mkPDU(uiMsgLen);
+        pdu->uiMsgType=ENUM_MSG_TYPE_FLUSH_FRIEND_RESPOND;
+        for(int i=0;i<res.size();i++){
+            memcpy((char*)(pdu->caMsg)+i*32, res.at(i).toStdString().c_str(), res.at(i).size());
+        }
+        write((char*)pdu, pdu->uiPDULen);
+        free(pdu);
+        pdu = NULL;
+        break;
+    }
     default:
         break;
     }
