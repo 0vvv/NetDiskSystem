@@ -173,3 +173,17 @@ QStringList OpeDB::handleFlushFriend(const char *name)
     }
     return strFriendList;
 }
+
+bool OpeDB::handleDelFriend(const char *name, const char *friendName)
+{
+    if(name == NULL || friendName == NULL){
+        return false;
+    }
+    QString data = QString("delete from friendInfo where id=(select id from userInfo where name = \'%1\') and friendId=(select id from userInfo where name = \'%2\')").arg(name).arg(friendName);
+    QSqlQuery query;
+    query.exec(data);
+
+    data = QString("delete from friendInfo where id=(select id from userInfo where name = \'%1\') and friendId=(select id from userInfo where name = \'%2\')").arg(friendName).arg(name);
+    query.exec(data);
+    return true;
+}

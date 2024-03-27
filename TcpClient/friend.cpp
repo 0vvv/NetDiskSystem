@@ -48,6 +48,8 @@ Friend::Friend(QWidget *parent)
             this, SLOT(searchUser()));
     connect(m_pFlushFiendPB, SIGNAL(clicked(bool)),
             this, SLOT(flushFriend()));
+    connect(m_pDelFriendPB, SIGNAL(clicked(bool)),
+            this, SLOT(delFriend()));
 }
 
 void Friend::showAllOnlineUser(PDU *pdu)
@@ -107,4 +109,21 @@ void Friend::flushFriend()
     TcpClient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);
     free(pdu);
     pdu=NULL;
+}
+
+void Friend::delFriend()
+{
+    // 选择的好友不为空才有下一步
+    if(NULL!=m_pFriendListWidget->currentItem()){
+        QString strFriendName = m_pFriendListWidget->currentItem()->text();
+        // qDebug() << strName;
+        PDU* pdu = mkPDU(0);
+        pdu->uiMsgType=ENUM_MSG_TYPE_DELETE_FRIEND_REQUEST;
+        QString strSelfName = TcpClient::getInstance().loginName();
+        memcpy(pdu->caData, strSelfName.toStdString().c_str(), strSelfName.size());
+        memcpy(pdu->caData+32, strFriendName.toStdString().c_str(), strFriendName.size());
+        TcpClient::getInstance().getTcpSocket().write((char*)pdu, pdu->uiPDULen);
+        free(pdu);
+        pdu=NULL;
+    }
 }

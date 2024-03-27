@@ -21,6 +21,7 @@ public:
     int handleSearchUser(const char* name);
     int handleAddFriend(const char* pername, const char* name);
     QStringList handleFlushFriend(const char* name);
+    bool handleDelFriend(const char* name, const char* friendName);
 signals:
 
 public slots:
