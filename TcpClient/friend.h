@@ -24,6 +24,7 @@ public slots:
     void searchUser();
     void flushFriend();
     void delFriend();
+    void privateChat();
 
 private:
     QTextEdit *m_pShowMsgTE;

@@ -177,6 +177,15 @@ void MyTcpSocket::recvMsg()
         MyTcpServer::getInstance().resend(friendName, pdu);
         break;
     }
+        // 私聊好友请求
+    case ENUM_MSG_TYPE_PRIVATE_CHAT_REQUEST:
+    {
+        char caPerName[32]={'\0'};
+        memcpy(caPerName, pdu->caData+32,32);
+        MyTcpServer::getInstance().resend(caPerName, pdu);
+
+        break;
+    }
     default:
         break;
     }
